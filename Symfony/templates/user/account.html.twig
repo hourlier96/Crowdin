@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+</br>
+<div class="account_container">
+    
+    <div class="jumbotron">
+        <h3>Welcome {{ user.username }} </h3>
+        </br>
+        {{ form_start(form_wall) }}
+        {{ form_row(form_wall.username, {'label': 'Username'}) }}
+        {{ form_row(form_wall.descr, {'label': 'Description', 'required': false}) }}
+        <small><a href="{{ path('change_password', {'id': app.user.id}) }}">Need to change password?</a>
+        <hr class="my-4">
+       
+        
+        <hr class="my-4">
+        {{ form_row(form_wall.submit, {'label': 'Modify'})}}
+        {{ form_end(form_wall) }}
+    </div>
+
+    <div class="jumbotron">
+        <h3>Here are you traducted projects </h3>
+        </br>
+        <hr class="my-4">
+        <h3>Graphics </h3>
+    </div>
+    
+</div> 
+
+{% endblock %}

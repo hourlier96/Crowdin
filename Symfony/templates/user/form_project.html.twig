@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% form_theme formProject 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+</br>
+    <div class="jumbotron">
+    <h1>Create project:</h1>
+        <div class="form-group">  
+            {{ form_start(formProject) }}
+            {{ form_widget(formProject) }}
+            {{ form_end(formProject) }}
+        </div>
+    </div>
+{% endblock %}

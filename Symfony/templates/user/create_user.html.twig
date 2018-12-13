@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% form_theme form_user 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+</br>
+<h3> Register here </h3>
+    {{ form_start(form_user) }}
+    {{ form_row(form_user.username, {'attr': {'placeholder': 'Type username here' }})}}
+    {{ form_row(form_user.password, {'attr': {'placeholder': 'Type password here' }})}}
+    {{ form_row(form_user.confirm_password, {'attr': {'placeholder': 'Confirm password' }})}}
+    {{ form_row(form_user.email, {'attr': {'placeholder': 'Type valid email here' }})}}
+    {{ form_row(form_user.submit, {'label': 'Create user'})}}
+    {{ form_end(form_user) }}
+{% endblock %}

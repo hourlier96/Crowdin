@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+</br>
+<div class="account_container">
+    
+    <div class="jumbotron">
+        <h3>Welcome {{ user.username }} </h3>
+        </br>
+        {{ form_start(form_wall) }}
+        {{ form_row(form_wall.username, {'label': 'Username'}) }}
+        {{ form_row(form_wall.descr, {'label': 'Description', 'required': false}) }}
+        <small><a href="{{ path('change_password', {'id': app.user.id}) }}">Need to change password?</a>
+        <hr class="my-4">
+        {{ form_row(form_wall.languages) }}
+        <label for="form_wall_0">French</label>
+        <input type="checkbox" id="form_wall_0" value="French" name="form_wall[languages][0]"/>
+        <label for="form_wall_1">English</label>
+        <input type="checkbox" id="form_wall_1" value="English" name="form_wall[languages][1]"/>
+        <label for="form_wall_2">Spanish</label>
+        <input type="checkbox" id="form_wall_2" value="Spanish" name="form_wall[languages][2]"/>
+        <label for="form_wall_3">Italian</label>
+        <input type="checkbox" id="form_wall_3" value="Italian" name="form_wall[languages][3]"/>
+        <label for="form_wall_4">Chinese</label>
+        <input type="checkbox" id="form_wall_4" value="Chinese" name="form_wall[languages][4]"/>
+        <label for="form_wall_5">Russian</label>
+        <input type="checkbox" id="form_wall_5" value="Russian" name="form_wall[languages][5]"/>
+        <label for="form_wall_6">Arab</label>
+        <input type="checkbox" id="form_wall_6" value="Arab" name="form_wall[languages][6]"/>
+        {% if form_wall.languages[0] is defined %}
+            var_dump(form_wall.langages)
+        {% endif %}
+        <hr class="my-4">
+        {{ form_row(form_wall.submit, {'label': 'Modify'})}}
+        {{ form_end(form_wall) }}
+    </div>
+
+    <div class="jumbotron">
+        <h3>Here are you traducted projects </h3>
+        </br>
+        <hr class="my-4">
+        <h3>Graphics </h3>
+    </div>
+    
+</div> 
+
+{% endblock %}
