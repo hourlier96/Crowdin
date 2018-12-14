@@ -13,10 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
-use App\Entity\Languages;
+use App\Form\FormType;
 
 class UserController extends AbstractController
 {
@@ -86,28 +85,10 @@ class UserController extends AbstractController
     public function account_user($id, Request $request, ObjectManager $manager) {
         $repo = $this->getDoctrine()->getRepository(User::class);
         $user = $repo->find($id);
-        $em = $this->getDoctrine()->getManager();
-        $languages = [new CheckboxType("French")/*,
-                      new CheckboxType("English"),
-                      new CheckboxType("Spanish")*/
-                    ];
-        $form = $this->createFormBuilder($user)
-                     ->add('username', TextType::class)
-                     ->add('descr', TextType::class)
-                     
-                     ->add('languages', null, array(
-                        'choices' => ['fr' => "French",
-                                      'en' => "English",
-                                      'sp' => "Spanish"
-                                    ],
-                        'required' => false,
-                        'multiple' => true,
-                        'expanded' => true,
-                    ))
-                     ->add('submit', SubmitType::class)
-                     ->getForm();
+
+        $form = $this->createForm(FormType::class, $user);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $form->handleRequest($request);
             $manager->flush();
         }
@@ -123,7 +104,8 @@ class UserController extends AbstractController
      * @Route("/change_pwd/{id}", name="change_password")
      */
     public function change_password($id, Request $request, ObjectManager $manager,
-                                    UserPasswordEncoderInterface $encoder) {
+                                    UserPasswordEncoderInterface $encoder) {                 
+        
         $repo = $this->getDoctrine()->getRepository(User::class);  //Simplifiable, cf 1h07 vidéo 1/4
         $user = $repo->find($id);
 

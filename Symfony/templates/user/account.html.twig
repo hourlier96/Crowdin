@@ -9,11 +9,12 @@
         </br>
         {{ form_start(form_wall) }}
         {{ form_row(form_wall.username, {'label': 'Username'}) }}
+        <hr class="my-4">
         {{ form_row(form_wall.descr, {'label': 'Description', 'required': false}) }}
         <small><a href="{{ path('change_password', {'id': app.user.id}) }}">Need to change password?</a>
         <hr class="my-4">
        
-        
+        {{ form_row(form_wall.languages)}}
         <hr class="my-4">
         {{ form_row(form_wall.submit, {'label': 'Modify'})}}
         {{ form_end(form_wall) }}
