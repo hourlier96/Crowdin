@@ -64,6 +64,11 @@ class User implements UserInterface
      */
     private $languages;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nb_projects;
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();
@@ -176,6 +181,18 @@ class User implements UserInterface
         if ($this->languages->contains($language)) {
             $this->languages->removeElement($language);
         }
+
+        return $this;
+    }
+
+    public function getNbProjects(): ?int
+    {
+        return $this->nb_projects;
+    }
+
+    public function setNbProjects(int $nb_projects): self
+    {
+        $this->nb_projects = $nb_projects;
 
         return $this;
     }

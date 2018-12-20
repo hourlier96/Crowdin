@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
 </br>
 <div class="account_container">
-    
     <div class="jumbotron">
         <h3>Welcome {{ user.username }} </h3>
         </br>
@@ -25,6 +25,25 @@
         </br>
         <hr class="my-4">
         <h3>Graphics </h3>
+            <canvas id="myChart" width:"300" height:"100"></canvas>
+    
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+            type: 'line',
+
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                datasets: [{
+                    label: "Number of projects",
+                    
+                    borderColor: 'rgb(255, 0, 0)',
+                    data: [{{user.getNbProjects()}}, {{user.getNbProjects()}}, {{user.getNbProjects()}}, {{user.getNbProjects()}}],
+                }]
+            },
+            options: {}
+            }); 
+        </script>
     </div>
     
 </div> 

@@ -10,12 +10,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
-use App\Form\FormType;
+use App\Entity\ResetPassword;
+use App\Form\UserType;
+use App\Form\AccountType;
+use App\Form\ResetPasswordType;
 
 class UserController extends AbstractController
 {
@@ -47,17 +48,13 @@ class UserController extends AbstractController
     public function create_user(Request $request, ObjectManager $manager, 
                                 UserPasswordEncoderInterface $encoder) {
         $user = new User();
-        $form = $this->createFormBuilder($user)
-                     ->add('username')
-                     ->add('password', PasswordType::class)
-                     ->add('confirm_password', PasswordType::class)
-                     ->add('email', EmailType::class)
-                     ->add('submit', SubmitType::class)
-                     ->getForm();
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()){
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
+            $user->setNbProjects(0);
             $manager->persist($user);
             $manager->flush();
             return $this->redirectToRoute('login_user');
@@ -86,13 +83,12 @@ class UserController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(User::class);
         $user = $repo->find($id);
 
-        $form = $this->createForm(FormType::class, $user);
-
+        $form = $this->createForm(AccountType::class, $user);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $form->handleRequest($request);
+            $manager->persist($user);
             $manager->flush();
         }
-
         return $this->render('user/account.html.twig', [
             'user' => $user,
             'form_wall' => $form->createView()
@@ -105,24 +101,29 @@ class UserController extends AbstractController
      */
     public function change_password($id, Request $request, ObjectManager $manager,
                                     UserPasswordEncoderInterface $encoder) {                 
-        
-        $repo = $this->getDoctrine()->getRepository(User::class);  //Simplifiable, cf 1h07 vidéo 1/4
-        $user = $repo->find($id);
+        $resetPasswordModel = new ResetPassword();
+        $form = $this->createForm(ResetPasswordType::class, $resetPasswordModel);     
+        $form->handleRequest($request);
 
-        $form = $this->createFormBuilder($user)
-                     ->add('password', PasswordType::class)
-                     ->add('submit', SubmitType::class)
-                     ->getForm();
-                     
         if ($form->isSubmitted() && $form->isValid()) {
-            $form->handleRequest($request);
-            $hash = $encoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($hash);
-            $manager->flush();
+            $oldPassword = $resetPasswordModel->getOldPassword();
+            $repo = $this->getDoctrine()->getRepository(User::class);
+            $user = $repo->find($id);
+            // Si l'ancien mot de passe est bon
+            if ($encoder->isPasswordValid($user, $oldPassword)) {
+                $newEncodedPassword = $encoder->encodePassword($user, $resetPasswordModel->getNewPassword());
+                $user->setPassword($newEncodedPassword);
+                $em = $this->getDoctrine()->getManager();         
+                $em->persist($user);
+                $em->flush();          
+                $this->addFlash('notice', 'Votre mot de passe à bien été changé !');
+            } else {
+                $this->addFlash('notice', 'Ancien mot de passe incorrect!');
+            }
         }
-        return $this->render('user/change_password.html.twig', [
-            'user' => $user,
-            'form_pwd' => $form->createView()
-        ]);
+                                        
+        return $this->render('user/change_password.html.twig', array(
+            'form_pwd' => $form->createView(),
+            ));
     }
 }
