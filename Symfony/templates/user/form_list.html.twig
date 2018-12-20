@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% form_theme formRemove 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+</br>
+<div class="jumbotron">
+    <h3>List of all your projects</h3>
+    </br>
+    {% for project in projects %}
+        <div class="projet">
+           <h4>{{project.getName()}} BY {{project.getUser().getUsername()}}</h4>
+        </div>
+        </br>
+    {% endfor %}
+</div>
+{% endblock %}
